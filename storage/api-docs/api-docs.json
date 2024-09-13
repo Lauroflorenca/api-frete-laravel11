@@ -1,0 +1,533 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Frete",
+        "description": "API para gerenciamento de viagens e checkpoints",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Efetua o login e retorna um token JWT",
+                "description": "Autentica o usuário com email e senha, e retorna um token JWT.",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token JWT gerado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer",
+                                            "example": 3600
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Efetua o logout",
+                "description": "Invalida o token JWT atual e desloga o usuário.",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout realizado com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/checkpoints": {
+            "get": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Listar todos os checkpoints",
+                "operationId": "71ba446ac77d266a9387b030e4ba5267",
+                "responses": {
+                    "200": {
+                        "description": "Lista de checkpoints"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Criar um novo checkpoint",
+                "operationId": "d77bd30f777177495141589f9ba5ebf0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Checkpoint"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Checkpoint criado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkpoints/{id}": {
+            "get": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Obter um checkpoint por ID",
+                "operationId": "270b15a523da68d6b0b5aaae7e3e54dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do checkpoint"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Atualizar um checkpoint",
+                "operationId": "cf57f2587f053e3ddbd2c323a6a43c4f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Checkpoint"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Checkpoint atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Excluir um checkpoint",
+                "operationId": "e0873cdc32d58cb32d9aeb081d57b647",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Checkpoint excluído"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkpoints/{id}/chegada": {
+            "put": {
+                "tags": [
+                    "Checkpoints"
+                ],
+                "summary": "Atualizar o campo chegada de um checkpoint",
+                "operationId": "7678e7359370c022c81d2fb56421c41e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "chegada": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Campo chegada atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/viagens": {
+            "get": {
+                "tags": [
+                    "Viagens"
+                ],
+                "summary": "Listar todas as viagens",
+                "operationId": "3844a9e3fceb378fc4f9a88881efe30e",
+                "responses": {
+                    "200": {
+                        "description": "Lista de viagens"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Viagens"
+                ],
+                "summary": "Criar uma nova viagem",
+                "operationId": "3db3ad95c027fb17c5e7ac8a12124c4d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Viagem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Viagem criada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/viagens/{id}": {
+            "get": {
+                "tags": [
+                    "Viagens"
+                ],
+                "summary": "Obter uma viagem por ID",
+                "operationId": "0893c66516300c8e46c968cccbc22bb2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da viagem"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Viagens"
+                ],
+                "summary": "Atualizar uma viagem",
+                "operationId": "d8b22f8f7f5559dbb105ace8191dd130",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Viagem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Viagem atualizada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Viagens"
+                ],
+                "summary": "Excluir uma viagem",
+                "operationId": "cf02ae69b9aa816dc430660f136faa71",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Viagem excluída"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Checkpoint": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "local": {
+                        "type": "string"
+                    },
+                    "ordem": {
+                        "type": "integer"
+                    },
+                    "chegada": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "observacao": {
+                        "type": "string"
+                    },
+                    "viagem_id": {
+                        "type": "integer"
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "Viagem": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "titulo": {
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "type": "string"
+                    },
+                    "motorista": {
+                        "type": "string"
+                    },
+                    "placa": {
+                        "type": "string"
+                    },
+                    "dt_origem": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "dt_destino": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "origem": {
+                        "type": "string"
+                    },
+                    "destino": {
+                        "type": "string"
+                    },
+                    "conteudo": {
+                        "type": "string"
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticação",
+            "description": "Autenticação"
+        },
+        {
+            "name": "Checkpoints",
+            "description": "Checkpoints"
+        },
+        {
+            "name": "Viagens",
+            "description": "Viagens"
+        }
+    ]
+}
